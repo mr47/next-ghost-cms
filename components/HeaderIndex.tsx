@@ -36,7 +36,7 @@ export const HeaderIndex = ({ settings }: HeaderIndexProps) => {
           <div className="site-header-content">
             <h1 className="site-title">
               {siteLogo && nextFeatureImages ? (
-                <Link href="/">
+                <Link legacyBehavior href="/">
                   <a>
                     <div
                       className="site-logo"
@@ -51,7 +51,7 @@ export const HeaderIndex = ({ settings }: HeaderIndexProps) => {
                   </a>
                 </Link>
               ) : site.logo ? (
-                <Link href="/">
+                <Link legacyBehavior href="/">
                   <a>
                     {/* eslint-disable @next/next/no-img-element */}
                     <img className="site-logo" src={site.logo} alt={title} />

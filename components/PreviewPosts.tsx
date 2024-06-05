@@ -33,7 +33,7 @@ export const PreviewPosts = ({ settings, primaryTag, posts, prev, next }: Previe
               <header className="read-next-card-header">
                 <h3>
                   <span>{text(`MORE_IN`)}</span>{' '}
-                  <Link href={url}>
+                  <Link legacyBehavior href={url}>
                     <a>{primaryTag?.name}</a>
                   </Link>
                 </h3>
@@ -43,7 +43,7 @@ export const PreviewPosts = ({ settings, primaryTag, posts, prev, next }: Previe
                   {posts?.map((post, i) => (
                     <li key={i}>
                       <h4>
-                        <Link href={resolveUrl({ cmsUrl, collectionPath: collections.getCollectionByNode(post), slug: post.slug, url: post.url })}>
+                        <Link legacyBehavior href={resolveUrl({ cmsUrl, collectionPath: collections.getCollectionByNode(post), slug: post.slug, url: post.url })}>
                           <a>{post.title}</a>
                         </Link>
                       </h4>
@@ -58,7 +58,7 @@ export const PreviewPosts = ({ settings, primaryTag, posts, prev, next }: Previe
                 </ul>
               </div>
               <footer className="read-next-card-footer">
-                <Link href={url}>
+                <Link legacyBehavior href={url}>
                   <a>
                     {(primaryTagCount && primaryTagCount > 0 && (primaryTagCount === 1 ? `1 ${text(`POST`)}` : `${text(`SEE_ALL`)} ${primaryTagCount} ${text(`POSTS`)}`)) ||
                       text(`NO_POSTS`)}{' '}

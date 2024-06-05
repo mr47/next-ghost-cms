@@ -1,7 +1,7 @@
 import React from 'react'
-import rehypeReact, { ComponentProps, ComponentPropsWithNode } from 'rehype-react'
-import unified from 'unified'
-import { Node } from 'unist'
+import rehypeReact, { Components, Options } from 'rehype-react'
+import * as prod from 'react/jsx-runtime'
+import {unified} from 'unified'
 import ReactGist from 'react-gist'
 
 import { NextLink } from '@components/NextLink'
@@ -14,14 +14,13 @@ type ScriptNode = {
 }
 
 /* eslint-disable react/display-name */
-const options = {
-  createElement: React.createElement,
+const options: Options = {
   Fragment: React.Fragment,
   passNode: true,
   components: {
-    Link: (props: ComponentProps) => <NextLink {...(props as ComponentPropsWithNode)} />,
-    Image: (props: ComponentProps) => <NextImage {...(props as ComponentPropsWithNode)} />,
-    script: (props: ComponentProps) => {
+    link: (props) => <NextLink {...props} />,
+    image: (props) => <NextImage {...props} />,
+    script: (props) => {
       const properties = props as ScriptNode
       const myRegexp = new RegExp(gist_regex);
       const match = myRegexp.exec(properties.src);
@@ -31,12 +30,13 @@ const options = {
       return null;
     }
   },
+  jsx: prod.jsx as any, jsxs: prod.jsxs as any
 }
 
 const renderAst = unified().use(rehypeReact, options)
 
 interface RenderContentProps {
-  htmlAst: Node | null
+  htmlAst: any | null
 }
 
 export const RenderContent = ({ htmlAst }: RenderContentProps) => {

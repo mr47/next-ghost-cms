@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { ComponentPropsWithNode } from 'rehype-react'
 import { Node } from 'unist'
 
 import { RenderContent } from '@components/RenderContent'
@@ -13,7 +12,7 @@ interface LinkNode extends Node {
   properties: PropertyProps
 }
 
-export const NextLink = (props: ComponentPropsWithNode) => {
+export const NextLink = (props: any) => {
   const node = props.node as LinkNode
   const { href } = node?.properties
   const [child] = node?.children
@@ -21,10 +20,8 @@ export const NextLink = (props: ComponentPropsWithNode) => {
   return (
     <>
       {!!href && (
-        <Link href={href}>
-          <a>
+        <Link href={href} legacyBehavior>
             <RenderContent htmlAst={child} />
-          </a>
         </Link>
       )}
     </>

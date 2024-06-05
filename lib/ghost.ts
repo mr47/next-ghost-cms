@@ -56,7 +56,7 @@ export interface GhostAuthors extends BrowseResults<GhostAuthor> {}
 const api = new GhostContentAPI({
   url: ghostAPIUrl,
   key: ghostAPIKey,
-  version: 'v3',
+  version: 'v5.0',
 })
 
 const postAndPageFetchOptions: Params = {

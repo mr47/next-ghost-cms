@@ -63,7 +63,7 @@ export const SiteNav = ({ settings, className, postTitle }: SiteNavProps) => {
     <nav className={className}>
       <div className="site-nav-left-wrapper">
         <div className="site-nav-left">
-          <Link href="/">
+          <Link legacyBehavior href="/">
             {siteLogo && nextImages.feature ? (
               <a className="site-nav-logo">
                 <div

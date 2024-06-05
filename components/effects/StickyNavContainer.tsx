@@ -1,86 +1,61 @@
-import { RefObject, Component, createRef } from 'react'
-const throttle = require(`lodash.throttle`)
+'use client'
+import React, { useRef, useState, useEffect, useCallback } from 'react';
+import _throttle from 'lodash/throttle';
 
 interface StickyNavContainerProps {
-  activeClass: string
-  isPost?: boolean
-  throttle: number
-  render: (arg: StickyNavContainer) => JSX.Element
+  activeClass: string;
+  isPost?: boolean;
+  throttle: number;
+  render: (arg: { anchorRef: React.RefObject<HTMLDivElement>, currentClass: string }) => JSX.Element;
 }
 
-export class StickyNavContainer extends Component<StickyNavContainerProps> {
-  anchorRef: RefObject<HTMLDivElement>
-  activeClass: string
-  isPost: boolean
-  state: {
-    ticking: boolean
-    lastScrollY: number
-    currentClass: string
-  }
+export const useStickyNav = (initialActiveClass: string, isPost = false, throttle = 300) => {
+  const [activeClass, setActiveClass] = useState(initialActiveClass);
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const [ticking, setTicking] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [currentClass, setCurrentClass] = useState('');
 
-  constructor(props: StickyNavContainerProps) {
-    super(props)
-    this.scrollHandler = this.scrollHandler.bind(this)
-    this.resizeHandler = this.resizeHandler.bind(this)
-    this.anchorRef = createRef()
-    this.activeClass = this.props.activeClass
-    this.isPost = this.props.isPost || false
-    this.state = {
-      ticking: false,
-      lastScrollY: 0,
-      currentClass: ''
-    }
-  }
+  const update = useCallback(() => {
+    const current = anchorRef.current;
+    let top = current ? current.getBoundingClientRect().top : 0;
+    let trigger = top + window.scrollY;
+    let triggerOffset = -20;
 
-  scrollHandler = () => { }
-
-  resizeHandler = () => { }
-
-  componentDidMount() {
-    this.scrollHandler = throttle(this.onScroll, this.props.throttle)
-    this.resizeHandler = throttle(this.onScroll, this.props.throttle)
-
-    window.addEventListener(`scroll`, this.scrollHandler, { passive: true })
-    window.addEventListener(`resize`, this.resizeHandler, { passive: true })
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener(`scroll`, this.scrollHandler)
-    window.removeEventListener(`resize`, this.resizeHandler)
-  }
-
-  onScroll = () => {
-    this.setState({ lastScrollY: window.scrollY })
-    this.requestTick()
-  }
-
-  requestTick = () => {
-    if (!this.state.ticking) {
-      requestAnimationFrame(this.update)
-    }
-    this.setState({ ticking: false })
-  }
-
-  update = () => {
-    const current = this.anchorRef && this.anchorRef.current
-    var top = current && current.getBoundingClientRect().top || 0
-    var trigger = top + window.scrollY
-    var triggerOffset = -20
-
-    if (this.isPost) {
-      triggerOffset = current && current.offsetHeight + 35 || 0
+    if (isPost) {
+      triggerOffset = current ? current.offsetHeight + 35 : 0;
     }
 
-    if (this.state.lastScrollY >= trigger + triggerOffset) {
-      this.setState({ currentClass: this.activeClass })
+    if (lastScrollY >= trigger + triggerOffset) {
+      setCurrentClass(activeClass);
     } else {
-      this.setState({ currentClass: `` })
+      setCurrentClass('');
     }
 
-    this.setState({ ticking: false })
-  }
+    setTicking(false);
+  }, [lastScrollY, isPost, activeClass]);
 
-  render() {
-    return this.props.render(this)
-  }
+  const onScroll = useCallback(() => {
+    setLastScrollY(window.scrollY);
+    if (!ticking) {
+      requestAnimationFrame(update);
+    }
+    setTicking(true);
+  }, [ticking, update]);
+
+  useEffect(() => {
+    const throttledScrollHandler = _throttle(onScroll, throttle);
+    const throttledResizeHandler = _throttle(onScroll, throttle);
+
+    window.addEventListener('scroll', throttledScrollHandler, { passive: true });
+    window.addEventListener('resize', throttledResizeHandler, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', throttledScrollHandler);
+      window.removeEventListener('resize', throttledResizeHandler);
+    };
+  }, [onScroll, throttle]);
+
+  return { sticky: { anchorRef, currentClass }, setActiveClass };
 }
+

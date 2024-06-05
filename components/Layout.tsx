@@ -8,8 +8,6 @@ import { SubscribeSuccess } from '@components/SubscribeSuccess'
 
 import { getLang, get } from '@utils/use-lang'
 import { GhostSettings } from '@lib/ghost'
-
-import { StickyNavContainer } from '@effects/StickyNavContainer'
 import { resolve } from 'url'
 
 /**
@@ -26,7 +24,7 @@ interface LayoutProps {
   header: ReactFragment
   children: ReactFragment
   isHome?: boolean
-  sticky?: StickyNavContainer
+  sticky?: any
   previewPosts?: ReactFragment
   bodyClass: string
   errorClass?: string
@@ -52,12 +50,12 @@ export const Layout = ({ settings, header, children, isHome, sticky, previewPost
         {/* The main header section on top of the screen */}
         {header}
         {/* The main content area */}
-        <main ref={(isHome && sticky && sticky.anchorRef) || null} id="site-main" className={`site-main outer ${errorClass}`}>
+        <main id="site-main" className={`site-main outer ${errorClass}`}>
           {/* All the main content gets inserted here, index.js, post.js */}
           {children}
         </main>
         {/* For sticky nav bar */}
-        {isHome && <StickyNav className={`site-nav ${sticky && sticky.state.currentClass}`} {...{ siteUrl, settings }} />}
+        {isHome && <StickyNav className={`site-nav ${sticky && sticky.currentClass}`} {...{ siteUrl, settings }} />}
         {/* Links to Previous/Next posts */}
         {previewPosts}
 
@@ -69,7 +67,7 @@ export const Layout = ({ settings, header, children, isHome, sticky, previewPost
             </section>
 
             <nav className="site-footer-nav">
-              <Link href="/">
+              <Link legacyBehavior href="/">
                 <a>{text(`LATEST_POSTS`)}</a>
               </Link>
               {site.facebook && (

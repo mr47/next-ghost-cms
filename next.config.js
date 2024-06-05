@@ -1,4 +1,4 @@
-const withImageLoader = require('next-image-loader')
+const {withImageLoader} = require('next-image-loader')
 const { PHASE_EXPORT } = require('next/constants')
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',

@@ -18,7 +18,6 @@ import { DisqusComments } from '@components/DisqusComments'
 import { Subscribe } from '@components/Subscribe'
 import { TableOfContents } from '@components/toc/TableOfContents'
 
-import { StickyNavContainer } from '@effects/StickyNavContainer'
 import { SEO } from '@meta/seo'
 
 import { PostClass } from '@helpers/PostClass'
@@ -28,6 +27,7 @@ import { collections } from '@lib/collections'
 import { ISeoImage } from '@meta/seoImage'
 
 import React from 'react'
+import { useStickyNav } from '@effects/StickyNavContainer'
 
 interface PostProps {
   cmsData: {
@@ -60,108 +60,101 @@ export const Post = ({ cmsData }: PostProps) => {
   if (htmlAst === undefined) throw Error('Post.tsx: htmlAst must be defined.')
 
   const collectionPath = collections.getCollectionByNode(post)
-
+  const { sticky} = useStickyNav('nav-post-title-active')
   return (
     <>
       <SEO {...{ description, settings, seoImage, article: post, title }} />
-      <StickyNavContainer
-        throttle={300}
-        isPost={true}
-        activeClass="nav-post-title-active"
-        render={(sticky) => (
-          <Layout
-            {...{ bodyClass, settings, sticky }}
-            header={<HeaderPost {...{ settings, sticky, title }} />}
-            previewPosts={<PreviewPosts {...{ settings, primaryTag: post.primary_tag, posts: previewPosts, prev: prevPost, next: nextPost }} />}
-          >
-            <div className="inner">
-              <article className={`post-full ${postClass}`}>
-                <header className="post-full-header">
-                  {post.primary_tag && (
-                    <section className="post-full-tags">
-                      <Link href={resolveUrl({ cmsUrl, slug: post.primary_tag.slug, url: post.primary_tag.url })}>
-                        <a>{post.primary_tag.name}</a>
-                      </Link>
-                    </section>
-                  )}
+      <Layout
+        {...{ bodyClass, settings, sticky }}
+        header={<HeaderPost {...{ settings, sticky, title }} />}
+        previewPosts={<PreviewPosts {...{ settings, primaryTag: post.primary_tag, posts: previewPosts, prev: prevPost, next: nextPost }} />}
+      >
+        <div className="inner">
+          <article className={`post-full ${postClass}`}>
+            <header className="post-full-header">
+              {post.primary_tag && (
+                <section className="post-full-tags">
+                  <Link legacyBehavior={true} href={resolveUrl({ cmsUrl, slug: post.primary_tag.slug, url: post.primary_tag.url })}>
+                    {post.primary_tag.name}
+                  </Link>
+                </section>
+              )}
 
-                  <h1 ref={sticky && sticky.anchorRef} className="post-full-title">
-                    {title}
-                  </h1>
+              <h1 ref={sticky && sticky.anchorRef} className="post-full-title">
+                {title}
+              </h1>
 
-                  {post.custom_excerpt && <p className="post-full-custom-excerpt">{post.custom_excerpt}</p>}
+              {post.custom_excerpt && <p className="post-full-custom-excerpt">{post.custom_excerpt}</p>}
 
-                  <div className="post-full-byline">
-                    <section className="post-full-byline-content">
-                      <AuthorList {...{ settings, authors: post.authors, isPost: true }} />
+              <div className="post-full-byline">
+                <section className="post-full-byline-content">
+                  <AuthorList {...{ settings, authors: post.authors, isPost: true }} />
 
-                      <section className="post-full-byline-meta">
-                        <h4 className="author-name">
-                          {post.authors?.map((author, i) => (
-                            <div key={i}>
-                              {i > 0 ? `, ` : ``}
-                              <Link href={resolveUrl({ cmsUrl, slug: author.slug, url: author.url || undefined })}>
-                                <a>{author.name}</a>
-                              </Link>
-                            </div>
-                          ))}
-                        </h4>
-                        <div className="byline-meta-content">
-                          <time className="byline-meta-date" dateTime={post.published_at || ''}>
-                            {dayjs(post.published_at || '').format('D MMMM, YYYY')}&nbsp;
-                          </time>
-                          <span className="byline-reading-time">
+                  <section className="post-full-byline-meta">
+                    <h4 className="author-name">
+                      {post.authors?.map((author, i) => (
+                        <div key={i}>
+                          {i > 0 ? `, ` : ``}
+                          <Link legacyBehavior href={resolveUrl({ cmsUrl, slug: author.slug, url: author.url || undefined })}>
+                            <a>{author.name}</a>
+                          </Link>
+                        </div>
+                      ))}
+                    </h4>
+                    <div className="byline-meta-content">
+                      <time className="byline-meta-date" dateTime={post.published_at || ''}>
+                        {dayjs(post.published_at || '').format('D MMMM, YYYY')}&nbsp;
+                      </time>
+                      <span className="byline-reading-time">
                             <span className="bull">&bull;</span> {readingTime}
                           </span>
-                        </div>
-                      </section>
-                    </section>
-                  </div>
-                </header>
+                    </div>
+                  </section>
+                </section>
+              </div>
+            </header>
 
-                {featImg &&
-                  (nextImages.feature && featImg.dimensions ? (
-                    <figure className="post-full-image" style={{ display: 'inherit' }}>
-                      <Image
-                        src={featImg.url}
-                        alt={title}
-                        quality={nextImages.quality}
-                        layout="responsive"
-                        sizes={`
+            {featImg &&
+              (nextImages.feature && featImg.dimensions ? (
+                <figure className="post-full-image" style={{ display: 'inherit' }}>
+                  <Image
+                    src={featImg.url}
+                    alt={title || ''}
+                    quality={nextImages.quality}
+                    layout="responsive"
+                    sizes={`
                               (max-width: 350px) 350px,
                               (max-width: 530px) 530px,
                               (max-width: 710px) 710px,
                               (max-width: 1170px) 1170px,
                               (max-width: 2110px) 2110px, 2000px
                             `}
-                        {...featImg.dimensions}
-                      />
-                    </figure>
-                  ) : (
-                    post.feature_image && (
-                      <figure className="post-full-image">
-                        <img src={post.feature_image} alt={title} />
-                      </figure>
-                    )
-                  ))}
+                    {...featImg.dimensions}
+                  />
+                </figure>
+              ) : (
+                post.feature_image && (
+                  <figure className="post-full-image">
+                    <img src={post.feature_image} alt={title} />
+                  </figure>
+                )
+              ))}
 
-                <section className="post-full-content">
-                  {toc.enable && !!post.toc && <TableOfContents {...{ toc: post.toc, url: resolveUrl({ cmsUrl, collectionPath, slug, url }), maxDepth: toc.maxDepth, lang }} />}
-                  <div className="post-content load-external-scripts">
-                    <RenderContent htmlAst={htmlAst} />
-                  </div>
-                </section>
+            <section className="post-full-content">
+              {toc.enable && !!post.toc && <TableOfContents {...{ toc: post.toc, url: resolveUrl({ cmsUrl, collectionPath, slug, url }), maxDepth: toc.maxDepth, lang }} />}
+              <div className="post-content load-external-scripts">
+                <RenderContent htmlAst={htmlAst} />
+              </div>
+            </section>
 
-                {memberSubscriptions && <Subscribe {...{ settings }} />}
+            {memberSubscriptions && <Subscribe {...{ settings }} />}
 
-                {commenting.system === 'commento' && <CommentoComments {...{ id: post.id, url: commenting.commentoUrl }} />}
+            {commenting.system === 'commento' && <CommentoComments {...{ id: post.id, url: commenting.commentoUrl }} />}
 
-                {commenting.system === 'disqus' && <DisqusComments {...{ post, shortname: commenting.disqusShortname, siteUrl: processEnv.siteUrl }} />}
-              </article>
-            </div>
-          </Layout>
-        )}
-      />
+            {commenting.system === 'disqus' && <DisqusComments {...{ post, shortname: commenting.disqusShortname, siteUrl: processEnv.siteUrl }} />}
+          </article>
+        </div>
+      </Layout>
     </>
   )
 }

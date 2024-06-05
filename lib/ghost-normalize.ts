@@ -1,8 +1,8 @@
-import Rehype from 'rehype'
+import {rehype as Rehype} from 'rehype'
 import { Node as UnistNode, Parent } from 'unist'
-import visit from 'unist-util-visit'
+import { visit } from 'unist-util-visit'
 import { cloneDeep } from 'lodash'
-import refractor from 'refractor'
+import { refractor } from 'refractor'
 import { PostOrPage } from '@tryghost/content-api'
 import { Dimensions, imageDimensions } from '@lib/images'
 import { generateTableOfContents } from '@lib/toc'
@@ -23,7 +23,7 @@ export const normalizePost = async (post: PostOrPage, cmsUrl: UrlWithStringQuery
 
   let htmlAst = rehype.parse(post.html || '')
   for (const process of processors) {
-    htmlAst = await process(htmlAst)
+    htmlAst = await process(htmlAst) as any
   }
 
   const toc = tableOfContents(htmlAst)
@@ -145,7 +145,7 @@ const syntaxHighlightWithPrismJS = (htmlAst: Node) => {
       }
       throw err
     }
-    node.children = result
+    node.children = result as any;
   })
 
   return htmlAst

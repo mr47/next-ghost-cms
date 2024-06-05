@@ -27,7 +27,7 @@ const createItems = (toc: IToC[], url: string, depth: number, maxDepth: number, 
     return (
       <li key={`${url}#${head.id}-${depth}-${index}`}>
         {head.id && (
-          <Link href={`${url}#${head.id}`}>
+          <Link legacyBehavior href={`${url}#${head.id}`}>
             <a className={isActive ? 'link active' : 'link'}>{head.heading}</a>
           </Link>
         )}

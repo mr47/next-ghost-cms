@@ -37,7 +37,7 @@ export default function Custom404({ posts, settings, bodyClass }: Custom404Props
         <section className="error-message">
           <h1 className="error-code">404</h1>
           <p className="error-description">{text(`PAGE_NOT_FOUND`)}</p>
-          <Link href="/">
+          <Link legacyBehavior href="/">
             <a className="error-link">{text(`GOTO_FRONT_PAGE`)} →</a>
           </Link>
         </section>
