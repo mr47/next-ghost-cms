@@ -145,6 +145,9 @@ const syntaxHighlightWithPrismJS = (htmlAst: Node) => {
       }
       throw err
     }
+    if (node.properties) {
+      node.properties.className = className;
+    }
     node.children = result as any;
   })
 

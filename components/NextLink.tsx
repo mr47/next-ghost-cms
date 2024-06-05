@@ -22,7 +22,7 @@ export const NextLink = (props: any) => {
   return (
     <>
       {href && (
-        <Link href={href} { ...(portalLink ? { onClick: handleOpen } : {})}>
+        <Link passHref href={href} { ...(portalLink ? { onClick: handleOpen } : {})}>
             <RenderContent htmlAst={child} />
         </Link>
       )}
