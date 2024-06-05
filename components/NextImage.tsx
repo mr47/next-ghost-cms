@@ -1,5 +1,4 @@
 import Image from 'next/image'
-import { ComponentPropsWithNode } from 'rehype-react'
 import { Node } from 'unist'
 import { Dimensions } from '@lib/images'
 import Zoom from 'react-medium-image-zoom'
@@ -16,7 +15,7 @@ interface ImageNode extends Node {
   properties: PropertyProps
 }
 
-export const NextImage = (props: ComponentPropsWithNode) => {
+export const NextImage = (props: any) => {
   const { node } = props
   if (!node) return null
   const imageNode = node as ImageNode

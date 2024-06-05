@@ -69,7 +69,7 @@ export function Contact({ cmsData }: PageProps) {
                 <figure className="post-full-image" style={{ display: 'inherit' }}>
                   <Image
                     src={featImg.url}
-                    alt={page.title}
+                    alt={page.title || ''}
                     quality={nextImages.quality}
                     layout="responsive"
                     sizes={`
