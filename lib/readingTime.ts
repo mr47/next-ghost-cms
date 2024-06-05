@@ -22,7 +22,7 @@ const countWords = (text: string) => {
     return count
   }
 
-  for (var i = 0; i < match.length; i += 1) {
+  for (let i = 0; i < match.length; i += 1) {
     if (match[i].charCodeAt(0) >= 0x4e00) {
       count += match[i].length
     } else {
@@ -44,7 +44,7 @@ const estimatedReadingTimeInMinutes = ({ wordCount, imageCount }: readingTimePro
   let readingTimeSeconds = wordCount / wordsPerSecond
 
   // add 12 seconds for the first image, 11 for the second, etc. limiting at 3
-  for (var i = 12; i > 12 - imageCount; i -= 1) {
+  for (let i = 12; i > 12 - imageCount; i -= 1) {
     readingTimeSeconds += Math.max(i, 3)
   }
 

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ReactFragment } from 'react'
 import { NavItem } from '@lib/ghost'
+import { useOverlay } from '@components/contexts/overlayProvider'
 
 /**
  * Navigation component
@@ -20,6 +21,7 @@ interface NavigationProps {
 
 export const Navigation = ({ data, navClass }: NavigationProps) => {
   const items: ReactFragment[] = []
+  const { handleOpen } = useOverlay()
 
   data?.map((navItem, i) => {
     if (navItem.url.match(/^\s?http(s?)/gi)) {
@@ -31,11 +33,12 @@ export const Navigation = ({ data, navClass }: NavigationProps) => {
         </li>
       )
     } else {
+      const portalLink  = navItem.url === '#/portal/' || navItem.url.indexOf('#/portal/') >= 0
       items.push(
         <li key={i} className={`nav-${navItem.label.toLowerCase()}`} role="menuitem">
           <div className={navClass}>
-            <Link legacyBehavior href={navItem.url} >
-              <a>{navItem.label}</a>
+            <Link passHref href={navItem.url} { ...(portalLink ? { onClick: handleOpen } : {})}>
+              {navItem.label}
             </Link>
           </div>
         </li>

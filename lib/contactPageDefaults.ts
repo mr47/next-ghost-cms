@@ -21,7 +21,7 @@ export const defaultPage: ContactPage = {
     contentType: 'application/json',
   },
   featureImage: {
-    url: 'https://static.gotsby.org/v1/assets/images/gatsby-ghost-contact.png',
+    url: '/publication-cover.png',
     dimensions: {
       width: 1040,
       height: 250

@@ -34,13 +34,13 @@ export const AuthorList = ({ settings, authors, isPost }: AuthorListProps) => {
               <li key={i} ref={hover.anchorRef} className="author-list-item">
                 {!isPost && <div className="author-name-tooltip">{author.name}</div>}
                 {isPost && (
-                  <div className={`author-card ${hover.state.currentClass}`}>
+                  <div className={`author-card ${hover.currentClass}`}>
                     <div className="author-profile-image">
                       {profileImg && nextImages.feature ? (
                         <Image
                           className="author-profile-image"
                           src={profileImg.url}
-                          alt={author.name}
+                          alt={author.name || ''}
                           layout="responsive"
                           quality={nextImages.quality}
                           {...profileImg.dimensions}
@@ -79,7 +79,7 @@ export const AuthorList = ({ settings, authors, isPost }: AuthorListProps) => {
                 <Link legacyBehavior href={url}>
                   {profileImg && nextImages.feature ? (
                     <a className={`${(isPost && `author`) || `static`}-avatar`} aria-label={author.name}>
-                      <Image src={profileImg.url} alt={author.name} layout="responsive" quality={nextImages.quality} {...profileImg.dimensions} />
+                      <Image src={profileImg.url} alt={author.name || ''} layout="responsive" quality={nextImages.quality} {...profileImg.dimensions} />
                     </a>
                   ) : author.profile_image ? (
                     <a className={`${(isPost && `author`) || `static`}-avatar`} aria-label={author.name}>

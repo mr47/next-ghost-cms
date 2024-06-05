@@ -1,52 +1,42 @@
-import { Component, RefObject, createRef } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 interface HoverOnAvatarProps {
-  activeClass: string
-  render: (arg: HoverOnAvatar) => JSX.Element
+  activeClass: string;
+  render: (arg: HoverOnAvatarType) => JSX.Element;
 }
 
-export class HoverOnAvatar extends Component<HoverOnAvatarProps> {
-  anchorRef: RefObject<HTMLLIElement>
-  activeClass: string
-  hoverTimeout: NodeJS.Timeout | undefined
-  state: {
-    currentClass: string
-  }
+export type HoverOnAvatarType = {
+  anchorRef: React.RefObject<HTMLLIElement>;
+  currentClass: string;
+};
 
-  constructor(props: HoverOnAvatarProps) {
-    super(props)
-    this.anchorRef = createRef<HTMLLIElement>()
-    this.activeClass = this.props.activeClass
-    this.hoverTimeout = undefined
-    this.state = {
-      currentClass: ''
-    }
-  }
+export const HoverOnAvatar: React.FC<HoverOnAvatarProps> = ({ activeClass, render }) => {
+  const anchorRef = useRef<HTMLLIElement>(null);
+  const [currentClass, setCurrentClass] = useState<string>('');
+  let hoverTimeout: NodeJS.Timeout | undefined;
 
-  componentDidMount() {
-    this.anchorRef?.current?.addEventListener(`mouseout`, this.onHoverOut, { passive: true })
-    this.anchorRef?.current?.addEventListener(`mouseover`, this.onHoverIn, { passive: true })
-  }
+  const onHoverIn = useCallback(() => {
+    hoverTimeout && clearTimeout(hoverTimeout);
+    setCurrentClass(activeClass);
+  }, []);
 
-  componentWillUnmount() {
-    this.hoverTimeout && clearTimeout(this.hoverTimeout)
-    this.anchorRef?.current?.removeEventListener(`mouseover`, this.onHoverIn)
-    this.anchorRef?.current?.removeEventListener(`mouseout`, this.onHoverOut)
-  }
+  const onHoverOut = useCallback(() => {
+    hoverTimeout = setTimeout(() => {
+      setCurrentClass('');
+    }, 50);
+  }, []);
 
-  onHoverIn = () => {
-    this.hoverTimeout && clearTimeout(this.hoverTimeout)
-    this.setState({ currentClass: this.activeClass })
-  }
+  useEffect(() => {
+    const anchor = anchorRef.current;
+    anchor?.addEventListener('mouseover', onHoverIn, { passive: true });
+    anchor?.addEventListener('mouseout', onHoverOut, { passive: true });
 
-  onHoverOut = () => {
-    // no delay for multiple authors
-    this.hoverTimeout = setTimeout(() => {
-      this.setState({ currentClass: `` })
-    }, 50)
-  }
+    return () => {
+      hoverTimeout && clearTimeout(hoverTimeout);
+      anchor?.removeEventListener('mouseover', onHoverIn);
+      anchor?.removeEventListener('mouseout', onHoverOut);
+    };
+  }, [hoverTimeout, onHoverIn, onHoverOut]);
 
-  render() {
-    return this.props.render(this)
-  }
-}
+  return render({ anchorRef, currentClass });
+};

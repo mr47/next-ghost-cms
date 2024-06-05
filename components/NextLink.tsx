@@ -18,7 +18,7 @@ export const NextLink = (props: any) => {
   const { href } = node?.properties
   const [child] = node?.children
   const { handleOpen } = useOverlay()
-  const portalLink  = href === '#/portal/'
+  const portalLink  = href === '#/portal/' || href && href.indexOf('#/portal/') >= 0
   return (
     <>
       {href && (
