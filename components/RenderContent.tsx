@@ -1,5 +1,5 @@
 import React from 'react'
-import rehypeReact, { Components, Options } from 'rehype-react'
+import rehypeReact, { Options } from 'rehype-react'
 import * as prod from 'react/jsx-runtime'
 import {unified} from 'unified'
 import ReactGist from 'react-gist'
@@ -18,7 +18,7 @@ const options: Options = {
   Fragment: React.Fragment,
   passNode: true,
   components: {
-    link: (props) => <NextLink {...props} />,
+    a: (props) => <NextLink {...props} />,
     image: (props) => <NextImage {...props} />,
     script: (props) => {
       const properties = props as ScriptNode
@@ -43,5 +43,3 @@ export const RenderContent = ({ htmlAst }: RenderContentProps) => {
   if (!htmlAst) return null
   return <>{renderAst.stringify(htmlAst)}</>
 }
-
-//<div className="post-content load-external-scripts">{renderAst.stringify(htmlAst)}</div>

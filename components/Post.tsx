@@ -61,6 +61,7 @@ export const Post = ({ cmsData }: PostProps) => {
 
   const collectionPath = collections.getCollectionByNode(post)
   const { sticky} = useStickyNav('nav-post-title-active')
+
   return (
     <>
       <SEO {...{ description, settings, seoImage, article: post, title }} />

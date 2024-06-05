@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 
 import { readingTime as readingTimeHelper } from '@lib/readingTime'
 import { resolveUrl } from '@utils/routing'
-import { getLang, get } from '@utils/use-lang'
+import { get, getLang } from '@utils/use-lang'
 
 import { AuthorList } from '@components/AuthorList'
 import { PostClass } from '@helpers/PostClass'
@@ -40,7 +40,7 @@ export const PostCard = ({ settings, post, num, isHome }: PostCardProps) => {
               <div className="post-card-image">
                 <Image
                   src={featImg.url}
-                  alt={post.title}
+                  alt={post.title || ''}
                   sizes="(max-width: 640px) 320px, (max-width: 1000px) 500px, 680px"
                   layout="fill"
                   objectFit="cover"

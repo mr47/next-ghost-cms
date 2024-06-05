@@ -84,7 +84,7 @@ const rewriteRelativeLinks = (htmlAst: Node) => {
       delete copyOfNode.properties
       delete copyOfNode.position
       copyOfNode.tagName = `span`
-      node.tagName = `Link`
+      node.tagName = `a`
       node.children = [copyOfNode]
     }
   })
